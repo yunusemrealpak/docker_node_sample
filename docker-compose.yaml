@@ -20,7 +20,7 @@ services:
       context: .\node-server
       dockerfile: Dockerfile
     env_file: 
-      - .env
+      - .\node-server\.env
     ports:
       - "3000:3000"
     networks:
@@ -46,7 +46,7 @@ services:
       - webnet
 
   elasticsearch:
-    image: elasticsearch
+    image: elasticsearch:7.14.1
     restart: always
     ports:
       - "9200:9200"
@@ -57,6 +57,15 @@ services:
       - discovery.type=single-node
     volumes:
       - esData:/usr/share/elasticsearch/data
+  
+  kibana:
+    image: kibana:7.14.1
+    ports:
+      - "5601:5601"
+    networks: 
+      - webnet
+    environment:
+      - ELASTICSEARCH_URL=http://elasticsearch:9200
 
   mongo:
     image: mongo
